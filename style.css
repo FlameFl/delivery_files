@@ -24,7 +24,14 @@ body {
   padding: 24px;
 }
 
+.segmented, .segmented__btn {
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
 .segmented {
+  touch-action: pan-y;
   position: relative;
   display: inline-grid;
   width: 300px;
@@ -53,8 +60,8 @@ body {
   outline: none;
 }
 
-.segmented__btn:hover { transform: translateY(-1px); }
-.segmented__btn:active { transform: translateY(0px) scale(0.8); }
+/* .segmented__btn:hover { transform: translateY(-1px); } */
+.segmented__btn:active { transform: translateY(0px) scale(0.97); }
 
 .segmented__btn:focus-visible {
   box-shadow: 0 0 0 3px rgba(0, 120, 255, 0.35);
@@ -73,16 +80,21 @@ body {
   box-shadow:
     0 8px 18px rgba(0,0,0,0.10),
     0 1px 1px rgba(0,0,0,0.08);
+  cursor: grab;
   transform: translateX(0%);
   transition: transform 260ms cubic-bezier(.2,.8,.2,1), 
               filter 260ms ease;
   will-change: transform;
 }
 
+.segmented__thumb:active {
+  cursor: grabbing;
+}
+/*
 .segmented[data-active="sub"] .segmented__thumb {
   transform: translateX(95%);
 }
-
+*/
 .segmented.is-animating .segmented__thumb {
   filter: saturate(1.05);
 }
