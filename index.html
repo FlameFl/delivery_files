@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Title</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="js/switch.js" defer></script>
+</head>
+<body>
+  <div class="segmented" role="tablist" aria-label="Режим">
+    <button class="segmented__btn is-active"
+            role="tab"
+            aria-selected="true"
+            data-tab="order"
+            type="button">
+      Заказ
+    </button>
+    <button class="segmented__btn"
+            role="tab"
+            aria-selected="false"
+            data-tab="sub"
+            type="button">
+      Подписка
+    </button>
+    <div class="segmented__thumb" aria-hidden="true"></div>
+  </div>
+
+  <section class="panel is-active" data-panel="order">
+    <!--order-->
+    <div class="orderdiv">
+      <h1 class="sectitle">ЗАКАЗ, мдааааа...</h1>
+    </div>
+    
+  </section>
+
+  <section class="panel" data-panel="sub">
+    <!--sub-->
+    <h1 class="sectitle">подПИСКА</h1>
+  </section>
+
+
+  <script src="js/switch.js"></script>
+
+
+</body>
+</html>

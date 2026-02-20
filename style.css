@@ -1,0 +1,97 @@
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(900px 600px at 10% 10%, rgba(120, 170, 255, 0.35), transparent 60%),
+    radial-gradient(800px 520px at 90% 20%, rgba(255, 170, 120, 0.30), transparent 60%),
+    radial-gradient(900px 700px at 40% 90%, rgba(140, 255, 200, 0.22), transparent 60%),
+    #f7f7fb;
+  background-attachment: fixed;
+}
+
+.sectitle {
+  text-align: center;
+  font: 600 50px/1.1 system-ui, -apple-system, Segoe UI, Roboto, Arial;
+}
+
+.panel {
+  width: min(720px, calc(100% - 32px));
+  padding: 24px;
+}
+
+.segmented {
+  position: absolute;
+  display: inline-grid;
+  width: 300px;
+  height: 70px;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  padding: 4px;
+  border-radius: 999px;
+  background: rgba(0,0,0,0.08);
+  /* border: 1px solid rgba(0,0,0,0.10); */
+  user-select: none;
+  box-shadow: inset 3px 5px 5px rgba(0,0,0,0.3);
+}
+
+.segmented__btn {
+  position: relative;
+  z-index: 2;
+  border: 0;
+  background: transparent;
+  padding: 10px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  font: 600 18px/1.1 system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  color: rgba(0,0,0,0.75);
+  transition: color 180ms ease, transform 120ms ease;
+  outline: none;
+}
+
+.segmented__btn:hover { transform: translateY(-1px); }
+.segmented__btn:active { transform: translateY(0px) scale(0.8); }
+
+.segmented__btn:focus-visible {
+  box-shadow: 0 0 0 3px rgba(0, 120, 255, 0.35);
+}
+
+.segmented__btn.is-active {
+  color: rgba(0,0,0,0.92);
+}
+
+.segmented__thumb {
+  position: absolute;
+  inset: 4px;
+  width: calc(50% - 0px);
+  border-radius: 999px;
+  background: rgba(255,255,255,0.95);
+  box-shadow:
+    0 8px 18px rgba(0,0,0,0.10),
+    0 1px 1px rgba(0,0,0,0.08);
+  transform: translateX(0%);
+  transition: transform 260ms cubic-bezier(.2,.8,.2,1), 
+              filter 260ms ease;
+  will-change: transform;
+}
+
+.segmented[data-active="sub"] .segmented__thumb {
+  transform: translateX(95%);
+}
+
+.segmented.is-animating .segmented__thumb {
+  filter: saturate(1.05);
+}
+
+.panel { display: none; margin-top: 16px; }
+.panel.is-active { display: block; }
+
+.orderdiv {
+  border: 1px solid rgba(0,0,0,0.10);
+  border-radius: 40px;
+  height: 400px;
+}
