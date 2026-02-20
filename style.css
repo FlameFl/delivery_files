@@ -25,7 +25,7 @@ body {
 }
 
 .segmented {
-  position: absolute;
+  position: relative;
   display: inline-grid;
   width: 300px;
   height: 70px;
