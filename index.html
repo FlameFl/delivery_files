@@ -6,6 +6,8 @@
   <title>Title</title>
   <link rel="stylesheet" href="style.css" />
   <script src="js/switch.js" defer></script>
+  <script src="js/cart.js" defer></script>
+  <script src="js/searchstyle.js" defer></script>
 </head>
 <body>
   <div class="segmented" role="tablist" aria-label="Режим">
@@ -21,7 +23,7 @@
             aria-selected="false"
             data-tab="sub"
             type="button">
-      Подписка
+      Настройка
     </button>
     <div class="segmented__thumb" aria-hidden="true"></div>
   </div>
@@ -29,7 +31,11 @@
   <section class="panel is-active" data-panel="order">
     <!--order-->
     <div class="orderdiv">
-      <h1 class="sectitle">ЗАКАЗ, мдааааа...</h1>
+      <!--<h1 class="sectitle">ЗАКАЗ, мдааааа...</h1>-->
+      <div class="input_container">
+        <input type="search" data-testid="search-input" aria-label="Поиск" class="search-input" id="search-input-id" placeholder="Напишите список продуктов" autocorrect="off" autocomplete="off" aria-invalid="false" value="">
+      </div>
+      <button class="build-btn" type="button" id="build-cart-btn"><span>Собрать корзину</span></button>
     </div>
     
   </section>
@@ -37,12 +43,11 @@
   <section class="panel" data-panel="sub">
     <!--sub-->
     <div class="orderdiv">
-      <h1 class="sectitle">подПИСКА</h1>
+      <div id="cart-root"></div>
+      <h1 class="sectitle"></h1>
     </div>
   </section>
 
-
-  <script src="js/switch.js" defer></script>
 
 
 </body>
