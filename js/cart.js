@@ -216,7 +216,9 @@ function renderCart(root) {
       <div class="cart-left">
         ${imgHtml}
         <div class="cart-main">
-          <div class="cart-title">${escapeHtml(item.term)}</div>
+          <div class="cart-title">${escapeHtml(productLabel(item.selected))}</div>
+          <div class="cart-sub">Запрос: ${escapeHtml(item.term)}</div>
+
           <select class="cart-select" data-index="${i}">
             ${optionsHtml}
           </select>
@@ -232,6 +234,7 @@ function renderCart(root) {
 
     root.appendChild(row);
   });
+  renderCheckoutBar();
 }
 
 function wireCartHandlers(root) {
@@ -305,4 +308,131 @@ document.addEventListener("DOMContentLoaded", async () => {
       btn.textContent = "Собрать корзину";
     }
   });
+  renderSlotPicker();
+  renderCheckoutBar();
 });
+
+// ====== Slots ======
+const TIME_WINDOWS = [
+  { id: "10-12", label: "10:00–12:00" },
+  { id: "12-14", label: "12:00–14:00" },
+];
+
+function makeDays(n = 3) {
+  const days = [];
+  const now = new Date();
+  for (let i = 0; i < n; i++) {
+    const d = new Date(now);
+    d.setDate(now.getDate() + i);
+
+    const top = new Intl.DateTimeFormat("ru-RU", { weekday: "short" }).format(d);
+    const bottom = new Intl.DateTimeFormat("ru-RU", { day: "2-digit", month: "short" }).format(d);
+
+    const key = d.toISOString().slice(0, 10);
+    days.push({ id: key, top, bottom });
+  }
+  return days;
+}
+
+let chosenDayId = localStorage.getItem("slotDay") || "";
+let chosenTimeId = localStorage.getItem("slotTime") || "";
+
+function selectedSlotLabel() {
+  if (!chosenDayId || !chosenTimeId) return "";
+  const days = makeDays(7);
+  const day = days.find(x => x.id === chosenDayId);
+  const time = TIME_WINDOWS.find(x => x.id === chosenTimeId);
+  if (!day || !time) return "";
+  return `${day.top}, ${day.bottom} • ${time.label}`;
+}
+
+function renderSlotPicker() {
+  const daysRoot = document.getElementById("slot-days");
+  const timesRoot = document.getElementById("slot-times");
+  const hint = document.getElementById("slot-hint");
+  if (!daysRoot || !timesRoot || !hint) return;
+
+  const days = makeDays(7);
+
+  // render days
+  daysRoot.innerHTML = days.map(d => `
+    <button type="button" class="slot-btn ${d.id === chosenDayId ? "is-active" : ""}" data-day="${d.id}">
+      <div class="slot-top">${d.top}</div>
+      <div class="slot-bottom">${d.bottom}</div>
+    </button>
+  `).join("");
+
+  // render times
+  timesRoot.innerHTML = TIME_WINDOWS.map(t => `
+    <button type="button" class="slot-btn ${t.id === chosenTimeId ? "is-active" : ""}" data-time="${t.id}">
+      <div class="slot-top">${t.label}</div>
+      <div class="slot-bottom">Окно доставки</div>
+    </button>
+  `).join("");
+
+  hint.textContent = (chosenDayId && chosenTimeId)
+    ? `Выбрано: ${selectedSlotLabel()}`
+    : "Выберите день и время";
+
+  // handlers
+  daysRoot.onclick = (e) => {
+    const b = e.target.closest("[data-day]");
+    if (!b) return;
+    chosenDayId = b.dataset.day;
+    localStorage.setItem("slotDay", chosenDayId);
+    renderSlotPicker();
+    renderCheckoutBar();
+  };
+
+  timesRoot.onclick = (e) => {
+    const b = e.target.closest("[data-time]");
+    if (!b) return;
+    chosenTimeId = b.dataset.time;
+    localStorage.setItem("slotTime", chosenTimeId);
+    renderSlotPicker();
+    renderCheckoutBar();
+  };
+}
+
+function calcTotal(cart) {
+  let sum = 0;
+  let unknown = 0;
+
+  for (const item of cart) {
+    const price = item.selected?.price;
+    if (price == null || Number.isNaN(price)) {
+      unknown += 1;
+      continue;
+    }
+    sum += price * (item.qty || 1);
+  }
+  return { sum, unknown };
+}
+
+function formatRub(x) {
+  return `${Math.round(x).toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} ₽`;
+}
+
+let chosenSlotId = localStorage.getItem("slotId") || "";
+
+function renderCheckoutBar() {
+  const sumEl = document.getElementById("total-sum");
+  const subEl = document.getElementById("total-sub");
+  const confirmBtn = document.getElementById("confirm-btn");
+  if (!sumEl || !subEl || !confirmBtn) return;
+
+  const { sum, unknown } = calcTotal(cartState);
+  sumEl.textContent = formatRub(sum);
+  subEl.textContent = unknown ? `⚠️ ${unknown} поз. без цены (не учтены)` : "Все позиции списка учтены";
+
+  const slotOk = !!(chosenDayId && chosenTimeId);
+  confirmBtn.disabled = !slotOk || cartState.length === 0;
+  confirmBtn.style.opacity = confirmBtn.disabled ? "0.6" : "1";
+  confirmBtn.style.cursor = confirmBtn.disabled ? "default" : "pointer";
+
+  confirmBtn.onclick = () => {
+    if (!slotOk) return;
+    alert(`Слот: ${selectedSlotLabel()}\nИтого: ${formatRub(sum)}`);
+  };
+}
+

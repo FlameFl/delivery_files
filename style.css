@@ -2,7 +2,7 @@ html, body {
   height: 100%;
 }
 
-body {
+/*body {
   margin: 0;
   display: grid;
   place-items: center;
@@ -13,10 +13,94 @@ body {
     #f7f7fb;
   background-attachment: fixed;
 }
+*/
+body{
+  margin: 0;
+  min-height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+
+  padding-top: 20px;
+
+  background:
+    radial-gradient(900px 600px at 10% 10%, rgba(120, 170, 255, 0.35), transparent 60%),
+    radial-gradient(800px 520px at 90% 20%, rgba(255, 170, 120, 0.30), transparent 60%),
+    radial-gradient(900px 700px at 40% 90%, rgba(140, 255, 200, 0.22), transparent 60%),
+    #f7f7fb;
+  background-attachment: fixed;
+}
+
+.help-fab{
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 9999;
+
+  border: 0;
+  border-radius: 999px;
+  padding: 12px 14px;
+
+  font: 800 14px/1 system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  color: rgba(0,0,0,0.88);
+  background: rgba(255,255,255,0.95);
+  box-shadow: 0 14px 28px rgba(0,0,0,0.30);
+
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.help-fab::before{
+  content:"";
+  position:absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, var(--g1), var(--g2));
+
+  transform: scaleX(0);
+  transform-origin: 0% 50%;
+  opacity: 0;
+  transition: transform 260ms cubic-bezier(.2,.8,.2,1), opacity 160ms ease;
+  will-change: transform, opacity;
+
+  z-index: -1;
+}
+
+.help-fab:hover::before{
+  transform: scaleX(1);
+  opacity: 1;
+}
+
+.help-fab:active{
+  transform: scale(0.98);
+}
+
+@media (max-width: 640px){
+  .help-fab{
+    right: 14px;
+    bottom: 14px;
+    padding: 12px 16px;
+    margin-bottom: 10px;
+  }
+}
 
 .sectitle {
   text-align: center;
   font: 600 50px/1.1 system-ui, -apple-system, Segoe UI, Roboto, Arial;
+}
+
+.hint {
+  width: min(920px, calc(100% - 32px));
+  margin: 16px auto 14px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  color: rgba(0,0,0,0.75);
+  font: 700 14px/1 system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  background: rgba(255,255,255,0.92);
+  box-shadow: 0 10px 18px rgba(0,0,0,0.06);
 }
 
 .panel {
@@ -31,12 +115,15 @@ body {
 }
 
 .segmented {
-  margin-top: 20px;
+  margin-top: 10%;
   touch-action: pan-y;
   position: relative;
   display: inline-grid;
-  width: 300px;
-  height: 70px;
+  width: 300px !important;
+  height: 70px !important;
+  flex: 0 0 auto;
+  min-width: 300px;
+  max-width: 300px;
   grid-template-columns: 1fr 1fr;
   gap: 0;
   padding: 4px;
@@ -100,18 +187,69 @@ body {
   filter: saturate(1.05);
 }
 
+.hero{
+  width: min(720px, calc(100% - 32px));
+  margin: 20% auto 6px;
+  text-align: center;
+}
+
+.hero__title{
+  font: 600 34px/1.1 system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  letter-spacing: -0.02em;
+  color: rgba(0,0,0,0.88);
+}
+
+
+@media (max-width: 640px){
+  .hero__title{ font-size: 28px; }
+}
+
 .panel { display: none; margin-top: 16px; }
 .panel.is-active { display: block; }
 
 .orderdiv {
-  
-  height: 400px;
-  display: absolut;
   justify-content: center;
   padding-top: 32px;
   align-items: flex-start;
   
 }
+
+.orderdiv[data-panel="order"] {
+  margin-top: 25%;
+}
+
+.actions{
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.actions .build-btn{ margin-top: 0; }
+
+.actions .build-btn{ width: auto; }
+
+.waves{
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  height: 1px;
+  transform: translateY(-2px);
+}
+
+.bar{
+  width: 3px;
+  border-radius: 99px;
+  background: rgba(0,0,0,0.70);
+  opacity: 0.85;
+}
+
+.bar1{ height: 5px; }
+.bar2{ height: 18px; }
+.bar3{ height: 10px; }
+.bar4{ height: 5px; }
 
 :root{
   --ring: 3px;
@@ -144,19 +282,16 @@ body {
   inset: 0;
   border-radius: inherit;
 
-  background:
-    conic-gradient(from -90deg,
-      var(--g1) 0turn,
-      var(--g2) calc(var(--p) * 1turn),
-      transparent 0
-    );
+  background: conic-gradient(from -90deg, var(--g1), var(--g2), var(--g1));
 
   padding: var(--ring);
   -webkit-mask:
+    conic-gradient(#000 0turn, #000 calc(var(--p) * 1turn), transparent 0),
     linear-gradient(#000 0 0) content-box,
     linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-          mask-composite: exclude;
+
+  -webkit-mask-composite: source-in, xor;
+          mask-composite: intersect, exclude;
 
   opacity: 0;
   transition: opacity 120ms ease;
@@ -183,6 +318,8 @@ body {
   font: 400 16px/1.1 system-ui, -apple-system, Segoe UI, Roboto, Arial;
   color: rgb(19, 19, 19);
 }
+
+
 .build-btn{
   margin-top: 16px;
   padding: 14px 18px;
@@ -219,7 +356,7 @@ body {
   z-index: -1;
 }
 
-.build-btn:active::before{
+.build-btn:hover::before{
   transform: scaleX(1);
   opacity: 1;
 }
@@ -304,7 +441,158 @@ body {
   font-weight: 700;
 }
 
+.checkout-bar{
+  width: min(920px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.92);
+  box-shadow: 0 10px 18px rgba(0,0,0,0.06);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.checkout-title{
+  font: 700 14px/1.1 system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  opacity: 0.7;
+}
+
+.checkout-sum{
+  font: 800 22px/1.1 system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  margin-top: 4px;
+}
+
+.checkout-sub{
+  margin-top: 6px;
+  font: 500 13px/1.2 system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  opacity: 0.7;
+}
+
+.checkout-right{
+  display: grid;
+  gap: 8px;
+  justify-items: end;
+}
+
+.checkout-label{
+  font: 600 13px/1 system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  opacity: 0.75;
+}
+
+.slot-block{
+  width: min(920px, calc(100% - 32px));
+  margin: 0 auto 14px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.92);
+  box-shadow: 0 10px 18px rgba(0,0,0,0.06);
+}
+
+.slot-title{
+  font: 800 18px/1.1 system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  margin-bottom: 10px;
+}
+
+.slot-row{ margin-top: 10px; }
+.slot-row-title{
+  font: 700 13px/1 system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  opacity: 0.7;
+  margin-bottom: 8px;
+}
+
+.slot-grid{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.slot-btn{
+  border: 1px solid rgba(0,0,0,0.10);
+  border-radius: 14px;
+  padding: 10px 12px;
+  min-width: 140px;
+
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+
+  background: rgba(255,255,255,0.95);
+  box-shadow: 0 10px 18px rgba(0,0,0,0.06);
+
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+
+  display: grid;
+  gap: 4px;
+  text-align: left;
+
+  transition: transform 120ms ease, box-shadow 180ms ease;
+}
+
+.slot-btn::before{
+  content:"";
+  position:absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, var(--g1), var(--g2));
+
+  transform: scaleX(0);
+  transform-origin: 0% 50%;
+  opacity: 0;
+
+  transition: transform 260ms cubic-bezier(.2,.8,.2,1), opacity 160ms ease;
+  will-change: transform, opacity;
+
+  z-index: -1;
+}
+
+.slot-btn:active{
+  transform: scale(0.98);
+}
+
+.slot-btn.is-active::before{
+  transform: scaleX(1);
+  opacity: 1;
+}
+
+.slot-btn.is-active{
+  border-color: rgba(0,0,0,0.18);
+  box-shadow: 0 14px 24px rgba(0,0,0,0.08);
+}
+
+@media (hover: hover) and (pointer: fine){
+  .slot-btn:hover::before{
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+
+.slot-btn:active::before{
+  transform: scaleX(1);
+  opacity: 1;
+}
+
+.slot-hint{
+  margin-top: 10px;
+  font: 600 13px/1.2 system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  opacity: 0.75;
+}
+
 @media (max-width: 640px){
+
+  .actions{
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .actions .build-btn{
+    width: 100%;
+  }
+  
+  .slot-btn{ min-width: 0; width: 100%; }
+
   .cart-row{
     display: grid;
     grid-template-columns: 1fr;
@@ -350,6 +638,16 @@ body {
     height: 44px;
     border-radius: 12px;
     font-size: 20px;
+  }
+    .checkout-bar{
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .checkout-right{
+    justify-items: stretch;
+  }
+  .slot-select{
+    width: 100%;
   }
 }
 

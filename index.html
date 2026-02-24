@@ -29,26 +29,67 @@
   </div>
 
   <section class="panel is-active" data-panel="order">
-    <!--order-->
-    <div class="orderdiv">
-      <!--<h1 class="sectitle">ЗАКАЗ, мдааааа...</h1>-->
+    <div class="hero">
+      <div class="hero__title">Что хотите заказать на этой неделе?</div>
+    </div>
+    <div class="orderdiv" data-panel="order">
       <div class="input_container">
         <input type="search" data-testid="search-input" aria-label="Поиск" class="search-input" id="search-input-id" placeholder="Напишите список продуктов" autocorrect="off" autocomplete="off" aria-invalid="false" value="">
       </div>
-      <button class="build-btn" type="button" id="build-cart-btn"><span>Собрать корзину</span></button>
+      <div class="actions">
+        <button class="build-btn" type="button" id="build-cart-btn"><span>Собрать корзину</span></button>
+
+        <button class="build-btn voice-btn" type="button">
+          <span>Голосовой ввод&nbsp;</span>
+          <span class="waves" aria-hidden="true">
+            <span class="bar bar1"></span>
+            <span class="bar bar2"></span>
+            <span class="bar bar3"></span>
+            <span class="bar bar4"></span>
+          </span>
+        </button>
+      </div>
     </div>
-    
+    <div class="hint">
+        Вы можете перечислить нужные вам продукты и наш сервис соберет корзину под Ваш запрос. 
+        Для этого достаточно ввести всё что вы хотите через знак "," (запятая). 
+        <br><br><b>Пример: молоко, масло, рис</b>
+    </div>
   </section>
 
   <section class="panel" data-panel="sub">
-    <!--sub-->
-    <div class="orderdiv">
-      <div id="cart-root"></div>
-      <h1 class="sectitle"></h1>
+    <div id="cart-root"></div>
+
+    <div class="slot-block" id="slot-block">
+      <div class="slot-title">Когда бы вы хотели бы получать заказ? (еженедельно)</div>
+
+      <div class="slot-row">
+        <div class="slot-row-title">День</div>
+        <div class="slot-grid" id="slot-days"></div>
+      </div>
+
+      <div class="slot-row">
+        <div class="slot-row-title">Время</div>
+        <div class="slot-grid" id="slot-times"></div>
+      </div>
+
+      <div class="slot-hint" id="slot-hint">Выберите день и время</div>
     </div>
+
+    <div id="checkout-bar" class="checkout-bar">
+      <div class="checkout-left">
+        <div class="checkout-title">Итого</div>
+        <div class="checkout-sum" id="total-sum">—</div>
+        <div class="checkout-sub" id="total-sub"></div>
+      </div>
+    </div>
+    
+    <button type="button" class="build-btn confirm-btn" id="confirm-btn"><span>Подтвердить</span></button>
   </section>
-
-
+  
+  <button class="help-fab" type="button" aria-label="Нужна помощь?">
+  Нужна помощь?
+  </button>
 
 </body>
 </html>
