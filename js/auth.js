@@ -19,7 +19,7 @@ window.initAuthUI = function initAuthUI(onLogin) {
     const phone = normalizePhone(phoneEl.value);
     if (!phone || phone.length < 10) { hint.textContent = "Введите телефон."; return; }
     lastCode = String(Math.floor(1000 + Math.random() * 9000));
-    hint.textContent = `MVP-код: ${lastCode} (в реале будет SMS)`;
+    hint.textContent = `код: ${lastCode} (в реале будет SMS)`;
     codeEl.focus();
   });
 
