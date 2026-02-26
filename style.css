@@ -596,7 +596,7 @@ body{
 
 .cart-main{ min-width: 0; }
 .cart-title{ font: 600 18px/1.1 system-ui, -apple-system, Segoe UI, Roboto, Arial; }
-.cart-sub{ font-size: 13px; opacity: 0.7; margin-top: 4px; }
+.cart-sub{ font: 500 13px/1.2 system-ui, -apple-system, Segoe UI, Roboto, Arial; opacity: 0.7; margin-top: 4px; }
 
 .cart-select{
   margin-top: 6px;
