@@ -3,13 +3,43 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>Title</title>
+
   <link rel="stylesheet" href="style.css" />
+
+  <script src="js/storage.js" defer></script>
+  <script src="js/auth.js" defer></script>
+  <script src="js/history.js" defer></script>
+  <script src="js/profile.js" defer></script>
+  <script src="js/slots.js" defer></script>
   <script src="js/switch.js" defer></script>
   <script src="js/cart.js" defer></script>
   <script src="js/searchstyle.js" defer></script>
 </head>
 <body>
+  <div class="topbar" id="topbar" hidden>
+    <div class="topbar__phone" id="topbar-phone"></div>
+    <button class="topbar__logout" id="logout-btn" type="button">Выйти</button>
+  </div>
+  <div class="auth-backdrop" id="auth-backdrop" aria-hidden="true">
+    <div class="auth-card" role="dialog" aria-modal="true" aria-label="Вход">
+      <div class="auth-title">Вход</div>
+      <div class="auth-sub">Введите телефон, мы пришлём код</div>
+
+      <div class="auth-row">
+        <input id="auth-phone" class="auth-input" type="tel" placeholder="+7 999 123-45-67" autocomplete="tel">
+        <button id="auth-send" class="build-btn auth-btn" type="button"><span>Получить код</span></button>
+      </div>
+
+      <div class="auth-row auth-row--code">
+        <input id="auth-code" class="auth-input" type="text" placeholder="Код из SMS" inputmode="numeric" maxlength="6" autocomplete="one-time-code">
+        <button id="auth-login" class="build-btn auth-btn" type="button"><span>Войти</span></button>
+      </div>
+
+      <div class="auth-hint" id="auth-hint"></div>
+    </div>
+  </div>
   <div class="segmented" role="tablist" aria-label="Режим">
     <button class="segmented__btn is-active"
             role="tab"
@@ -37,7 +67,7 @@
         <input type="search" data-testid="search-input" aria-label="Поиск" class="search-input" id="search-input-id" placeholder="Напишите список продуктов" autocorrect="off" autocomplete="off" aria-invalid="false" value="">
       </div>
       <div class="actions">
-        <button class="build-btn" type="button" id="build-cart-btn"><span>Собрать корзину</span></button>
+        <button class="build-btn btn-cart" type="button" id="build-cart-btn"><span>Собрать корзину</span></button>
 
         <button class="build-btn voice-btn" type="button">
           <span>Голосовой ввод&nbsp;</span>
@@ -49,16 +79,24 @@
           </span>
         </button>
       </div>
+      <div class="history" id="history"></div>
     </div>
     <div class="hint">
         Вы можете перечислить нужные вам продукты и наш сервис соберет корзину под Ваш запрос. 
-        Для этого достаточно ввести всё что вы хотите через знак "," (запятая). 
-        <br><br><b>Пример: молоко, масло, рис</b>
+        Для этого достаточно ввести всё что Вы хотите через знак "," (запятая) или воспользоватся голосовым вводом. 
+        <br><br><b>Пример: молоко, сметана 20%, масло, рис</b>
     </div>
   </section>
 
   <section class="panel" data-panel="sub">
     <div id="cart-root"></div>
+
+    <div class="profile-block">
+      <div class="profile-title">Адрес и комментарий</div>
+
+      <input id="addr-input" class="profile-input" type="text" placeholder="Адрес доставки">
+      <textarea id="comment-input" class="profile-textarea" placeholder="Комментарий курьеру (домофон, этаж, “не звонить” и т.д.)"></textarea>
+    </div>
 
     <div class="slot-block" id="slot-block">
       <div class="slot-title">Когда бы вы хотели получать заказ? (еженедельно)</div>

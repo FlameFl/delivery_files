@@ -229,12 +229,15 @@ function renderCart(root) {
         <button type="button" class="qty-btn" data-dec="${i}">−</button>
         <div class="qty-val">${item.qty}</div>
         <button type="button" class="qty-btn" data-inc="${i}">+</button>
+
+        <button type="button" class="remove-btn" data-rm="${i}" aria-label="Удалить">✕</button>
       </div>
     `;
 
     root.appendChild(row);
   });
   renderCheckoutBar();
+  saveState({ cartState });
 }
 
 function wireCartHandlers(root) {
@@ -265,16 +268,49 @@ function wireCartHandlers(root) {
       cartState[idx].qty = Math.max(1, cartState[idx].qty - 1);
       renderCart(root);
     }
+    const rm = e.target.closest("[data-rm]");
+    if (rm) {
+      const idx = Number(rm.dataset.rm);
+      cartState.splice(idx, 1);
+      saveState({ cartState });
+      renderCart(root);
+      return;
+    } 
   });
 }
 
 // ====== glue ======
 document.addEventListener("DOMContentLoaded", async () => {
+  window.resetUIState = resetUIState;
+  window.afterLoginRestore = restoreFromState;
+
+  window.renderTopbar?.();
+  initAuthUI?.(() => {
+    window.renderTopbar?.();
+    restoreFromState();
+    initProfileUI?.();
+    renderSlotPicker?.();
+    renderCheckoutBar?.();
+
+    const st = loadState?.();
+    renderHistory?.(st?.history || []);
+  });
+
+  if (!getAuth?.()?.phone) {
+    openAuth?.();
+    return;
+  }
+
+  restoreFromState();
+  initProfileUI?.();
+  renderSlotPicker?.();
+  renderCheckoutBar?.();
+
   const input = document.getElementById("search-input-id");
   const btn = document.getElementById("build-cart-btn");
   const cartRoot = document.getElementById("cart-root");
 
-  console.log({ input, btn, cartRoot });
+  input?.addEventListener("input", () => saveState?.({ inputText: input.value }));
 
   btn.disabled = true;
   btn.textContent = "Загружаю каталог…";
@@ -292,12 +328,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   wireCartHandlers(cartRoot);
 
   btn.addEventListener("click", () => {
-    console.log("build clicked");
     btn.disabled = true;
     btn.textContent = "Собираю…";
-
     try {
       cartState = buildCartFromText(input.value);
+      saveState?.({ inputText: input.value, cartState });
+      addToHistory?.(input.value);
+
       renderCart(cartRoot);
       document.querySelector('.segmented__btn[data-tab="sub"]')?.click();
     } catch (err) {
@@ -308,8 +345,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       btn.textContent = "Собрать корзину";
     }
   });
-  renderSlotPicker();
-  renderCheckoutBar();
+
+  const st = loadState?.();
+  renderHistory?.(st?.history || []);
 });
 
 // ====== Slots ======
@@ -318,7 +356,7 @@ const TIME_WINDOWS = [
   { id: "12-14", label: "12:00–14:00" },
 ];
 
-function makeDays(n = 3) {
+function makeDays(n = 7) {
   const days = [];
   const now = new Date();
   for (let i = 0; i < n; i++) {
@@ -334,8 +372,10 @@ function makeDays(n = 3) {
   return days;
 }
 
-let chosenDayId = localStorage.getItem("slotDay") || "";
-let chosenTimeId = localStorage.getItem("slotTime") || "";
+// let chosenDayId = localStorage.getItem("slotDay") || "";
+// let chosenTimeId = localStorage.getItem("slotTime") || "";
+let chosenDayId = "";
+let chosenTimeId = "";
 
 function selectedSlotLabel() {
   if (!chosenDayId || !chosenTimeId) return "";
@@ -379,7 +419,9 @@ function renderSlotPicker() {
     const b = e.target.closest("[data-day]");
     if (!b) return;
     chosenDayId = b.dataset.day;
-    localStorage.setItem("slotDay", chosenDayId);
+    chosenDayId = b.dataset.day;
+    // localStorage.setItem("slotDay", chosenDayId);
+    saveState({ chosenDayId });
     renderSlotPicker();
     renderCheckoutBar();
   };
@@ -388,7 +430,8 @@ function renderSlotPicker() {
     const b = e.target.closest("[data-time]");
     if (!b) return;
     chosenTimeId = b.dataset.time;
-    localStorage.setItem("slotTime", chosenTimeId);
+    // localStorage.setItem("slotTime", chosenTimeId);
+    saveState({ chosenTimeId });
     renderSlotPicker();
     renderCheckoutBar();
   };
@@ -436,3 +479,58 @@ function renderCheckoutBar() {
   };
 }
 
+function resetUIState() {
+  const input = document.getElementById("search-input-id");
+  if (input) input.value = "";
+
+  cartState = [];
+  const cartRoot = document.getElementById("cart-root");
+  if (cartRoot) cartRoot.innerHTML = "";
+
+  const addr = document.getElementById("addr-input");
+  const comm = document.getElementById("comment-input");
+  if (addr) addr.value = "";
+  if (comm) comm.value = "";
+
+  chosenDayId = "";
+  chosenTimeId = "";
+
+  document.querySelector('.segmented__btn[data-tab="order"]')?.click();
+
+  renderSlotPicker?.();
+  renderCheckoutBar?.();
+  renderHistory?.([]);
+}
+
+function restoreFromState() {
+  resetUIState();
+
+  window.resetUIState = resetUIState;
+  window.afterLoginRestore = restoreFromState;
+
+  const st = loadState?.();
+  if (!st) return;
+
+  const input = document.getElementById("search-input-id");
+  if (input && st.inputText) input.value = st.inputText;
+
+  if (Array.isArray(st.cartState)) cartState = st.cartState;
+
+  const addr = document.getElementById("addr-input");
+  const comm = document.getElementById("comment-input");
+  if (addr && st.address) addr.value = st.address;
+  if (comm && st.comment) comm.value = st.comment;
+
+  chosenDayId = st.chosenDayId || "";
+  chosenTimeId = st.chosenTimeId || "";
+
+  renderSlotPicker?.();
+  renderCheckoutBar?.();
+  renderHistory?.(st.history || []);
+
+  const cartRoot = document.getElementById("cart-root");
+  if (cartRoot && cartState.length) {
+    renderCart(cartRoot);
+    document.querySelector('.segmented__btn[data-tab="sub"]')?.click();
+  }
+}
